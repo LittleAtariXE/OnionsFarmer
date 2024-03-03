@@ -99,20 +99,6 @@ class OnionsBag:
         ip.start()
         print("Start obtain IP address")
     
-
-    def _checkOnion(self, onion: object) -> str:
-        """
-        Checks the status of an Onion instance's thread.
-
-        :param onion: The Onion object to check.
-        :return: A string indicating the Onion's thread status.
-        """
-        if onion.is_alive():
-            return "working..."
-        elif not onion.is_alive() and not onion._start:
-            return "ready to start"
-        else:
-            return "terminated"
     
     def newCircuit(self) -> None:
         """
