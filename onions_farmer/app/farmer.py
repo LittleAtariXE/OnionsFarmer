@@ -11,16 +11,19 @@ from typing import Union
 
 class Farmer:
     """
-    Farmer class manages the communication with the Tor control socket to authenticate, 
-    send commands, and monitor the status of the Tor connection. It supports operations 
-    like checking Tor connectivity, renewing the Tor circuit, and logging messages.
+    The Farmer class is responsible for managing communication with the Tor control port. It facilitates
+    authentication, sending commands, and monitoring the status of the Tor connection. This class enables
+    operations such as checking Tor connectivity, renewing Tor circuits for new identities, and logging
+    interactions with the control port for debugging and monitoring purposes.
     """
     def __init__(self, config: dict, onion_callback: object):
         """
-        Initializes the Farmer with configuration and a reference to the Onion object.
+        Initializes the Farmer object with Tor configuration and a callback reference to the associated Onion object.
+        It sets up the path to the control socket, log file locations, and other necessary configurations for managing
+        the Tor process.
 
-        :param config: Configuration dictionary for Tor and control socket settings.
-        :param onion_callback: Reference to the Onion object for callbacks and control.
+        :param config: A dictionary containing configuration details for the Tor process, including paths and settings.
+        :param onion_callback: A reference to the Onion object that this Farmer instance will manage and interact with.
         """
 
         self.onion = onion_callback
@@ -36,9 +39,10 @@ class Farmer:
     
     def addLog(self, text: str) -> None:
         """
-        Adds a log entry to the log file specified in the configuration.
+        Appends a new log entry to the specified log file. This method is used for tracking events, operations,
+        and interactions with the Tor control port over time.
 
-        :param text: The text message to log.
+        :param text: The log message to be recorded.
         """
         with open(self.logFile, "a") as f:
             _time = datetime.now()
@@ -46,10 +50,10 @@ class Farmer:
     
     def socketConnect(self) -> bool:
         """
-        Attempts to connect to the Tor control socket using the path specified in the config.
-        Authenticates with the control socket upon connection.
+        Attempts to establish a connection to the Tor control socket as specified in the configuration. It handles
+        the initial authentication process with the control port upon successful connection.
 
-        :return: True if the connection and authentication are successful, False otherwise.
+        :return: True if successfully connected and authenticated with the Tor control socket, False otherwise.
         """
         try:
             self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -65,9 +69,10 @@ class Farmer:
     
     def sendMsg(self, msg: str) -> None:
         """
-        Sends a message to the Tor control socket.
+        Sends a command message to the Tor control socket. This method is essential for issuing commands and
+        requests to the Tor process via the control port.
 
-        :param msg: The message to send to the control socket.
+        :param msg: The command message to be sent to the Tor control socket.
         """
         if not msg.endswith("\r\n"):
             msg += "\r\n"
@@ -76,9 +81,10 @@ class Farmer:
     
     def reciveMsg(self) -> str:
         """
-        Receives a message from the Tor control socket.
+        Receives and returns a message from the Tor control socket. This method is crucial for retrieving responses
+        and status updates from the Tor process in response to issued commands.
 
-        :return: The received message as a string.
+        :return: The received message from the Tor control socket as a string.
         """
         msg = b""
         while not self.stopEvent.is_set():
@@ -100,11 +106,12 @@ class Farmer:
     
     def sendCMD(self, msg: str, silence: bool = False) -> Union[str, bool]:
         """
-        Sends a command to the Tor control socket and returns the response.
+        Sends a command to the Tor control socket and awaits a response. This method simplifies interaction with
+        the control port by encapsulating message sending and response retrieval into a single operation.
 
-        :param msg: The command to send.
-        :param silence: If True, suppresses error messages to the console.
-        :return: The response from the control socket, or None if not connected.
+        :param msg: The command to be sent to the control socket.
+        :param silence: If True, suppresses printing error messages to the console.
+        :return: The response from the Tor control socket as a string, or False if an error occurs.
         """
         if not self._isCtrlConn:
             if not silence:
@@ -120,9 +127,10 @@ class Farmer:
     
     def checkTorConn(self) -> bool:
         """
-        Checks the Tor connection status by querying the bootstrap phase.
+        Verifies the current connection status with the Tor network by querying the bootstrap phase from the
+        control socket. It determines whether the Tor process has successfully established a network connection.
 
-        :return: True if Tor is fully connected (bootstrap phase is 100), False otherwise.
+        :return: True if the Tor network connection is fully established, False otherwise.
         """
         if not self._isCtrlConn:
             return False
@@ -139,7 +147,9 @@ class Farmer:
     
     def _isTorConn(self) -> None:
         """
-        Continuously checks for Tor connectivity in a loop until connected.
+        A private method that continuously checks for Tor connectivity until a connection is established. It
+        is designed to run in a loop, facilitating automatic reconnection attempts or confirmation of initial
+        connection success.
         """
         while True:
             sleep(self._pauseLoop)
@@ -149,15 +159,18 @@ class Farmer:
         
     def isTorConn(self) -> None:
         """
-        Starts a daemon thread to monitor Tor connectivity.
+        Initiates a background daemon thread to monitor the connection status with the Tor network. This method
+        ensures continuous connectivity checks without blocking the main execution flow.
         """
         check = Thread(target=self._isTorConn, daemon=True)
         check.start()
     
     def _newCircuit(self, obtain_ip: bool = False) -> None:
         """
-        Requests a new Tor circuit and clears the cached IP address in the Onion object.
-        Waits until Tor connectivity is re-established.
+        Internally requests the creation of a new Tor circuit and optionally updates the cached IP address. This
+        method is called to renew the Tor connection for a new identity or IP address.
+
+        :param obtain_ip: If True, updates the cached exit node IP address after establishing a new circuit.
         """
         cmd = self.sendCMD("SIGNAL NEWNYM\r\n", silence=True)
         self.onion._ip = None
@@ -169,14 +182,18 @@ class Farmer:
     
     def newCircuit(self, obtain_ip: bool = False) -> None:
         """
-        Starts a daemon thread to request a new Tor circuit.
+        Starts a background daemon thread to request a new Tor circuit. This allows for non-blocking operation
+        and immediate return to the calling process while the circuit renewal is handled in the background.
+
+        :param obtain_ip: If True, indicates that obtaining a new exit node IP address is desired after the circuit is renewed.
         """
         circuit = Thread(target=self._newCircuit, args=(obtain_ip, ), daemon=True)
         circuit.start()
     
     def _work(self) -> None:
         """
-        Attempts to establish a connection to the Tor control socket in a loop until successful.
+        A private method that attempts to establish and maintain a connection to the Tor control socket. It runs
+        in a loop, continuously trying to connect until successful, and then enters a state of monitoring Tor connectivity.
         """
         while not self._isCtrlConn:
             self._isCtrlConn = self.socketConnect()
@@ -185,7 +202,9 @@ class Farmer:
     
     def work(self) -> None:
         """
-        Starts the main daemon thread to manage the Tor control socket connection and monitor Tor connectivity.
+        Starts the main operation of the Farmer class as a daemon thread. This includes establishing a connection
+        to the Tor control socket, authenticating, and continuously monitoring the Tor connection status. It serves
+        as the primary method for initiating and managing Tor control port interactions.
         """
         work = Thread(target=self._work, daemon=True)
         work.start()
