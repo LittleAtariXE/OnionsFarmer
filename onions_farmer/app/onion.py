@@ -15,16 +15,19 @@ from .tools.bridge_http import BridgeHTTP
 
 class Onion(Thread):
     """
-    The Onion class extends threading.Thread and is responsible for managing the lifecycle
-    of a Tor process. This includes starting Tor with a specific configuration, logging its output,
-    and gracefully shutting it down upon request.
+    Represents an individual Tor instance, extending the functionality of threading.Thread. This class
+    manages the lifecycle of a Tor process, including its initiation with specific configurations, monitoring
+    and logging its activities, and ensuring a graceful shutdown. Additionally, it features tools for exit node
+    IP checking and an HTTPBridge, a simple HTTP proxy to SOCKS interface for Tor, enabling each Onion object
+    to have its HTTP -> SOCKS_TOR proxy capability.
     """
     def __init__(self, config: dict, stop_event: threading.Event):
         """
-        Initializes the Onion thread with a given configuration and a stop event.
+        Initializes the Onion object with the necessary configuration and a threading event to signal stopping.
+        The configuration includes paths and settings for Tor operation, logging details, and proxy settings.
 
-        :param config: A dictionary containing configuration options for the Tor process and logging.
-        :param stop_event: A threading.Event() object used to signal the thread to stop running.
+        :param config: Configuration dictionary for the Tor instance, including paths and proxy settings.
+        :param stop_event: A threading.Event object to signal the thread to stop running.
         """
         super().__init__()
         self.stopEvent = stop_event
@@ -48,8 +51,7 @@ class Onion(Thread):
         self.httpBridge = None
         self.Farmer = Farmer(self._config, self)
         self.preapreTools()
-        
-        
+          
     
     @property
     def conf(self) -> dict:
@@ -82,6 +84,13 @@ class Onion(Thread):
         return self._getIP()
     
     def preapreTools(self) -> None:
+        """
+        Prepares additional tools for the Tor instance, including IP checking and HTTPBridge setup. The IP
+        Checker is initialized based on the local or outbound SOCKS settings, and the HTTPBridge is configured
+        if enabled in the configuration. This method establishes the foundational tools necessary for extended
+        functionalities beyond the Tor process management.
+        """
+
         if not self.localAddr and self.outSocks:
             self._ipChecker = IP_Checker(self.outSocks)
         else:
@@ -94,13 +103,13 @@ class Onion(Thread):
                 self.httpBridge = BridgeHTTP(self, self._config["HttpBridge"])
             self._httpBridge = f"{self.httpBridge.ip}:{self.httpBridge.port}"
 
-        
     
     def makeLogFile(self, fpath: str) -> None:
         """
-        Creates or appends a header to a log file indicating the start of a new log section.
+        Creates or appends to a log file at the specified path, marking the start of a new logging session.
+        This method is essential for tracking the lifecycle and activities of the Tor process over time.
 
-        :param fpath: The file path to the log file.
+        :param fpath: Path to the log file to be created or appended.
         """
         with open(fpath, "w") as f:
             _time = datetime.now()
@@ -108,7 +117,8 @@ class Onion(Thread):
 
     def _printLog(self) -> None:
         """
-        Continuously reads and prints the Tor log file to the console.
+        A private method that continuously monitors and prints the Tor log file's contents to the console.
+        This function facilitates real-time monitoring of Tor's operational status and debugging.
         """
         try:
             with open(self.logFile, "r") as f:
@@ -127,14 +137,17 @@ class Onion(Thread):
     
     def printLog(self) -> None:
         """
-        Starts a daemon thread to continuously print the Tor process's log output.
+        Initiates a daemon thread to continuously read and print the Tor process's log output, enabling
+        real-time monitoring and logging of Tor activities to the console.
         """
         pl = Thread(target=self._printLog, daemon=True)
         pl.start()
     
     def onionStart(self) -> None:
         """
-        Starts the Tor process using the specified configuration and manages its lifecycle.
+        Initiates the Tor process using the specified configuration, managing its lifecycle. This includes
+        starting Tor with the provided configuration, logging its activities, and optionally starting the
+        HTTPBridge if configured. It ensures the Tor process runs as intended and monitors for a stop signal.
         """
         self.stopEvent.clear()
         command = ["tor", "-f", self.torrc]
@@ -158,7 +171,9 @@ class Onion(Thread):
     
     def terminateTorProcess(self) -> None:
         """
-        Attempts to gracefully terminate the Tor process. If unsuccessful, tries to kill the process.
+        Attempts to gracefully terminate the Tor process. If unsuccessful, it forcefully kills the process.
+        This method ensures that the Tor instance is correctly shut down, preventing any potential leaks or
+        hanging processes.
         """
         try:
             self.procTOR.terminate()
@@ -169,21 +184,29 @@ class Onion(Thread):
     
     def sendCMD(self, command: str) -> Union[str, bool]:
         """
-        Sends a command, wait and returns a response
-        All available commands are described in the Tor documentation:
-        https://spec.torproject.org/control-spec/commands.html
+        Sends a command to the Tor control port and waits for a response. This method allows for dynamic
+        interaction with the Tor process, enabling functionalities such as creating new circuits or querying
+        status information.
 
-        return: STR contains response from Socket Control Port
+        :param command: The command to be sent to the Tor control port.
+        :return: The response from the Tor control port or False if an error occurs.
         """
         return self.Farmer.sendCMD(command)
     
     def newCircuit(self, obtain_ip: bool = False) -> None:
         """
-        Creates a separate thread to make a new circuit 
+        Requests the creation of a new Tor circuit, optionally checking for a new exit node IP. This method
+        can be used to refresh the Tor connection, potentially improving anonymity or bypassing network restrictions.
+
+        :param obtain_ip: If True, checks and updates the exit node IP after establishing the new circuit.
         """
         self.Farmer.newCircuit(obtain_ip)
     
     def status(self) -> str:
+        """
+        Returns the current status of the Tor instance, such as ready to start, working, or terminated.
+        This method provides a quick overview of the Tor process's state, aiding in monitoring and management.
+        """
         if not self.is_alive() and not self._start:
             return "ready to start"
         elif self.is_alive():
@@ -192,15 +215,28 @@ class Onion(Thread):
             return "terminated"
     
     def infoConf(self) -> None:
+        """
+        Prints the current configuration and status information of the Tor instance. This method offers a
+        convenient way to review the operational parameters and state of the Tor process.
+        """
         for k, i in self.conf.items():
             print(f"{str(k):<20}{str(i):<40}")
     
     def info(self) -> str:
+        """
+        Compiles and returns a summary of the Tor instance's information, including configuration details,
+        operational status, and proxy settings. This method facilitates a quick overview of the instance's
+        state and settings.
+        """
         return f"{self.name:<20}{str(self.localAddr):<25}{str(self.outSocks):<25}{str(self._ip):<20}{str(self.status()):<20}{str(self.isTorConn):<15}{str(self._httpBridge):<20}"
     
-    
-    
     def _getIP(self) -> Union[str, bool]:
+        """
+        Retrieves the current exit node IP address if the Tor connection is established and operational.
+        This method is crucial for verifying the anonymity and operational status of the Tor instance.
+
+        :return: The current exit node IP address or False if not connected or an error occurs.
+        """
         if not self.isTorConn:
             self._ip = None
             return None
@@ -210,9 +246,18 @@ class Onion(Thread):
         return self._ip
     
     def stop(self) -> None:
+        """
+        Signals the Onion thread to stop running, initiating the shutdown process for the Tor instance.
+        This method allows for a controlled and graceful termination of the Tor process.
+        """
         self.stopEvent.set()
     
     def run(self):
+        """
+        Overrides the Thread's run method, initiating the Tor process startup, including log file creation,
+        starting the Tor process with the configured settings, and managing its lifecycle. This method
+        represents the entry point for the Onion thread's execution.
+        """
         self.makeLogFile(self.logFile)
         self.makeLogFile(self.logCtrl)
         self.onionStart()

@@ -8,16 +8,23 @@ from typing import Union
 
 class TorConstructor:
     """
-    The Constructor class is responsible for setting up the necessary directories and configurations
-    for running Tor instances. It ensures that Tor is installed, directories for logs, control sockets,
-    and configuration files are created, and that the configuration files are correctly prepared.
+    The TorConstructor class is responsible for initializing the environment necessary for running
+    multiple Tor instances. It ensures the presence of Tor, creates directories for logs, control sockets,
+    and configuration files, and prepares configuration files accordingly. This class is a foundational
+    component for managing Tor instances in a scalable and organized manner. Requires Tor to be installed
+    and Python version 3.11 or newer.
     """
 
     def __init__(self, onions_dir_path: str = None):
         """
-        Initializes the Constructor class with paths for the main directory, templates, Torrc,
-        control sockets, and logs. It also calls the firstStage method to check Tor installation
-        and create necessary directories.
+        Initializes the TorConstructor class with optional paths for the main directory. If no path is provided,
+        it defaults to a directory named "Onions" in the parent directory of the script's location. This method
+        initializes directory paths for main operations, control sockets, logs, configuration files, and Tor's
+        library files. It also triggers the first stage of setup, which includes checking for Tor's installation
+        and the creation of necessary directories.
+
+        :param onions_dir_path: Optional. The path to the main directory where the Tor instances will be managed.
+                                If not provided, a default path is used.
         """
 
         self.__dirName = Path(os.path.dirname(__file__))
@@ -32,6 +39,14 @@ class TorConstructor:
 
     
     def setOnionsDir(self, onions_dir: Union[bool, str]) -> str:
+        """
+        Determines the main directory for Tor instances. If no custom path is provided, it defaults to a directory
+        named "Onions" in the grandparent directory of the script's location. If a custom path is provided but does
+        not exist, an error message is displayed, and None is returned.
+
+        :param onions_dir: The custom path for the main directory or False if no path is provided.
+        :return: The path to the main directory as a string.
+        """
         if not onions_dir:
             main_dir = self.__dirName.parent.parent
             main_dir = os.path.join(main_dir, "Onions")
@@ -45,9 +60,11 @@ class TorConstructor:
     
     def makeDir(self) -> bool:
         """
-        Creates directories necessary for Tor's operation if they do not already exist.
-        Sets permissions for the control socket directory. Returns True if successful,
-        False otherwise.
+        Creates the necessary directories for Tor operation if they do not already exist. This includes directories
+        for main operations, control sockets, logs, configuration files, and library files. Also sets specific
+        permissions for the control socket directory to enhance security.
+
+        :return: True if all directories were successfully created and false otherwise.
         """
         dirs = [self.dirMainOnions, self.dirCtrlSocket, self.dirLogs, self.dirTorrc, self.dirTorLib]
         for d in dirs:
@@ -73,8 +90,10 @@ class TorConstructor:
     
     def isTorInstalled(self) -> bool:
         """
-        Checks if Tor is installed by attempting to get its version. Returns True if Tor
-        is found, False otherwise.
+        Verifies if Tor is installed by attempting to run the 'tor --version' command. It provides a clear indication
+        if Tor is correctly installed on the system and accessible from the command line.
+
+        :return: True if Tor is installed, False otherwise.
         """
         try:
             out = subprocess.run(["tor", "--version"], capture_output=True, check=True, text=True)
@@ -89,14 +108,25 @@ class TorConstructor:
     
     def firstStage(self) -> None:
         """
-        The first stage in setting up the environment for Tor. Checks if Tor is installed
-        and necessary directories are made. Exits the program if either check fails.
+        Executes the initial setup phase, which includes checking for Tor's installation and creating necessary
+        directories. If either check fails, the program prints an error message and exits to prevent further execution.
+
+        :return: None
         """
         if  not self.isTorInstalled() or not self.makeDir():
             print("[!!] EXIT PROGRAM [!!]")
             sys.exit()
     
     def makeFile(self, target: str, data: str = None) -> bool:
+        """
+        Creates or overwrites a file at the specified target path with the provided data. If no data is provided,
+        it creates an empty file. This method is primarily used for generating configuration files.
+
+        :param target: The file path where the file should be created or overwritten.
+        :param data: The content to be written into the file. If None, an empty file is created.
+        :return: True if the file was successfully created or overwritten, False if an error occurred.
+        """
+
         try:
             with open(target, "w") as f:
                 if data:
@@ -109,6 +139,13 @@ class TorConstructor:
             return False
     
     def loadFile(self, target: str) -> Union[bool, str]:
+        """
+        Reads and returns the content of a file specified by the target path. If the file does not exist,
+        it prints an error message and returns None.
+
+        :param target: The file path of the file to be read.
+        :return: The content of the file as a string if successful, None otherwise.
+        """
         if not os.path.exists(target):
             print(f"[!!] TOR Constructor ERROR: file: {target} does not exist [!!]")
             return None
@@ -117,6 +154,15 @@ class TorConstructor:
         return data
     
     def choseTorrc(self, conf: dict) -> str:
+        """
+        Selects a Tor configuration file (torrc) based on the provided configuration dictionary. If a specific
+        torrc path is provided in the configuration, it attempts to load it; otherwise, it defaults to a
+        custom torrc template.
+
+        :param conf: A dictionary containing the configuration details.
+        :return: The content of the chosen torrc file as a string.
+        """
+
         torrc = conf.get("Torrc")
         if not torrc:
             return "## CUSTOM TORRC FILE\n\n"
@@ -131,6 +177,16 @@ class TorConstructor:
             return tor_data
     
     def prepareConf(self, conf: dict, part=False) -> str:
+        """
+        Prepares the Tor configuration content based on the provided dictionary. It can generate a full configuration
+        or just a part of it, depending on the 'part' parameter. This method handles various configuration options
+        such as local and outside socks ports, debug logging, etc.
+
+        :param conf: A dictionary containing key configuration parameters.
+        :param part: Boolean indicating whether to generate a partial or full configuration.
+        :return: The prepared configuration content as a string.
+        """
+
         if part:
             buff = ""
         else:
@@ -154,9 +210,13 @@ class TorConstructor:
         
     def makeConfig(self, conf: dict) -> Union[dict, bool]:
         """
-        Prepares and writes the Tor configuration file based on the provided 'config' dictionary.
-        Returns a dictionary with paths and configuration details necessary to start Tor, or None
+        Generates the complete Tor configuration file based on the provided 'config' dictionary and writes it
+        to the filesystem. It also handles directory creation and permission setting for Tor's data directory.
+        Returns a dictionary with paths and configuration details necessary to start Tor if successful, or None
         if an error occurs during the process.
+
+        :param conf: A dictionary containing the configuration details for a Tor instance.
+        :return: A dictionary with configuration details and paths if successful, None otherwise.
         """
 
         name = conf["Name"]
