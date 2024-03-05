@@ -73,6 +73,13 @@
       </ul>
       <p>This method allows for flexible creation and management of Tor instances, catering to a wide range of use cases and preferences.</p>
   </div>
+  <div id="instance-naming">
+    <h2>Optimizing Tor Connection Initialization</h2>
+    <p>When assigning names to Onion instances, whether through the <code>plantOnion()</code> method or the <code>makeOnionsBag()</code> function, consistently using the same names can lead to faster connection times and configuration with the Tor network. This performance benefit is due to the reuse of already downloaded Tor library files.</p>
+    <p>The first execution of a newly named Onion instance may take longer, as Tor needs to download all necessary files, descriptors, etc. However, subsequent runs with the same instance name will notice a marked improvement in startup times. This optimization technique leverages cached data to expedite the initialization process, making repeated uses of OnionsFarmer more efficient.</p>
+  </div>
+
+  
 </div>
 
 
