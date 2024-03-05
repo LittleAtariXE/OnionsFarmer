@@ -75,8 +75,16 @@
   </div>
   <div id="instance-naming">
     <h2>Optimizing Tor Connection Initialization</h2>
-    <p>When assigning names to Onion instances, whether through the <code>plantOnion()</code> method or the <code>makeOnionsBag()</code> function, consistently using the same names can lead to faster connection times and configuration with the Tor network. This performance benefit is due to the reuse of already downloaded Tor library files.</p>
-    <p>The first execution of a newly named Onion instance may take longer, as Tor needs to download all necessary files, descriptors, etc. However, subsequent runs with the same instance name will notice a marked improvement in startup times. This optimization technique leverages cached data to expedite the initialization process, making repeated uses of OnionsFarmer more efficient.</p>
+    <p>When selecting names for Onion instances, either through <code>plantOnion()</code> or <code>makeOnionsBag()</code>, consistently using the same names can lead to faster connection and configuration times with the Tor network. This efficiency gain is due to the Tor library files already being downloaded. The difference becomes noticeable when rerunning the same script. The initial startup always takes the longest, as Tor needs to download all necessary files, descriptors, etc.</p>
+  </div>
+
+  <div id="method-getOnion">
+    <h2>OnionsFarmer.getOnion() Method</h2>
+    <p>The <code>getOnion()</code> method retrieves an <code>Onion</code> object previously created by the OnionsFarmer. This method facilitates access to individual Onion instances for management and interaction:</p>
+    <ul>
+        <li><strong>name</strong>: The name of the previously created Onion instance. Providing this name as a parameter allows for the retrieval of the specific Onion object. If this parameter is omitted, a <code>dict</code> object containing all Onion objects managed by OnionsFarmer is returned.</li>
+    </ul>
+    <p>Onion objects are typically assigned to variables for easy access. OnionsFarmer internally stores every Onion object created, enabling efficient management and retrieval of these instances as needed.</p>
   </div>
 
   
