@@ -40,11 +40,9 @@
 <div id="installation">
     <h2>Installation</h2>
     <p>OnionsFarmer is versatile and can function both as a standalone application or as an imported module in your projects. The choice of how you wish to use it is yours.</p>
-    
     <h3>Downloading OnionsFarmer:</h3>
     <p>To get started with OnionsFarmer, clone the repository using Git:</p>
     <pre><code>git clone https://github.com/LittleAtariXE/OnionsFarmer.git</code></pre>
-    
     <h3>Installing Dependencies:</h3>
     <p>After cloning the repository, navigate to the OnionsFarmer directory and install the necessary Python libraries by running:</p>
     <pre><code>pip install -r requirements.txt</code></pre>
