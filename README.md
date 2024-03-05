@@ -1,19 +1,18 @@
 <div id="intro" align="center">
   <h1 align="center">Onions Farmer</h1>
+  <p>A powerful utility for managing multiple Tor instances</p>
   <img src="img/f1.png" alt="OnionFarmer Intro">
-  
 </div>
-
 <div id="description">
-  <h2>OnionsFarmer: The Tor Instance Gardener</h2>
-  OnionFarmer is a sophisticated utility designed to cultivate "Onions", metaphorically speaking. Each "Onion" is an independent instance of the Tor network, allowing users to manage multiple Tor processes simultaneously. This Python-based class requires the Tor software to be installed on the system and the user to be added to the Tor group. This setup enables the OnionFarmer to initiate and manage Tor network connections directly.
+  <h2>About OnionsFarmer</h2>
+  <p>OnionsFarmer empowers users to cultivate "Onions" — a playful metaphor for independent Tor network instances. This sophisticated Python utility facilitates the simultaneous management of multiple Tor processes. For optimal functionality, it requires the Tor software installation on the user's system and proper user permissions. OnionsFarmer streamlines the initiation and supervision of Tor network connections, enhancing both security and usability.</p>
   <h2>Key Features</h2>
   <ul>
-    <li><strong>Create Tor Instances:</strong> The <code>plantOnion</code> method seeds a new Tor instance, functioning as a separate, manageable object.</li>
-    <li><strong>Independent Operation:</strong> Each Onion operates independently, offering granular control through built-in methods tailored for interaction and management of the Tor network.</li>
-    <li><strong>Graceful Shutdown:</strong> It is highly recommended to invoke the <code>Onion.stop()</code> method before closing your application to ensure a proper shutdown of the Tor process.</li>
-    <li><strong>Return Objects:</strong> The <code>plantOnion</code> method returns two pivotal objects - the Onion instance and an external stop event. These objects are essential for direct control and termination of the Tor instance.</li>
-    <li><strong>Persistent Configuration:</strong> Upon the initial creation, OnionFarmer generates a directory named "ONIONS" within its folder. This directory houses logs, necessary configuration files, and Tor's "lib" files. Reusing the same Tor instance name enhances startup times, leveraging previously downloaded files for quicker initialization.</li>
-    <li><strong>OnionsBag:</strong> Literally a "Bag of Onions". This object stores multiple Onion (Tor instances) objects, allowing for the rapid creation of a specified number of Tor instances and facilitating their bulk management. The OnionsBag simplifies the process of managing multiple Tor connections, providing an efficient way to control and interact with several instances simultaneously.</li>
+    <li><strong>Create Tor Instances:</strong> With the <code>plantOnion</code> method, users can seed new, individually manageable Tor instances.</li>
+    <li><strong>Independent Operation:</strong> Each Onion instance operates independently, providing detailed control over its respective Tor process.</li>
+    <li><strong>Graceful Shutdown:</strong> For orderly Tor process termination, employing the <code>Onion.stop()</code> method is advised before exiting the application.</li>
+    <li><strong>Direct Control and Termination:</strong> The <code>plantOnion</code> method returns an Onion instance along with an external stop event, enabling straightforward control and shutdown operations.</li>
+    <li><strong>Persistent Configuration:</strong> OnionsFarmer auto-generates a "ONIONS" directory for storing logs, configuration, and Tor library files. Reutilizing the same Tor instance names can speed up subsequent startups by leveraging existing files.</li>
+    <li><strong>OnionsBag - Bulk Management:</strong> A convenient feature for handling multiple Tor instances collectively. It allows for the swift creation and management of several Onions, simplifying the orchestration of numerous Tor connections.</li>
   </ul>
 </div>
