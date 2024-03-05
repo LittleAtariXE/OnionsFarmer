@@ -16,3 +16,13 @@
     <li><strong>OnionsBag - Bulk Management:</strong> A convenient feature for handling multiple Tor instances collectively. It allows for the swift creation and management of several Onions, simplifying the orchestration of numerous Tor connections.</li>
   </ul>
 </div>
+
+<div id="toc">
+  <h2 align="center">Contents</h2>
+  <div align="center">
+    <a href="#req">Requirements</a> &nbsp;|&nbsp;
+    <a href="#Whatis">Install</a>  &nbsp;|&nbsp;
+    <a href="#How_works">Methods</a>  &nbsp;|&nbsp;
+    <br/>
+  </div>
+</div>
