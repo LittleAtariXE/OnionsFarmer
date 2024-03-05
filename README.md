@@ -49,7 +49,8 @@
 </div>
 
 <div id="methods">
-  <h2 allign="center">OnionsFarmer Methods</h2>
+  <h2 align="center">OnionsFarmer Methods</h2>
+  <img src="img/f2.png" alt="Onions Market">
   <div id="method-plantOnion">
       <h2>OnionsFarmer.plantOnion() Method</h2>
       <p>The <code>plantOnion()</code> method, literally "plant an onion", is responsible for creating a new <code>Onion</code> object, which represents an instance of Tor. This method offers a variety of parameters for customization:</p>
