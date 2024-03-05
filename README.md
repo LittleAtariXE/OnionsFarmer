@@ -96,6 +96,20 @@
     <p><strong>REMEMBER:</strong> It is crucial to stop all running Onion instances before exiting your script or application. This ensures a proper shutdown of the Tor processes and prevents any potential resource leaks or orphaned processes.</p>
   </div>
 
+  <div id="method-makeOnionsBag">
+    <h2>OnionsFarmer.makeOnionsBag() Method</h2>
+    <p>The <code>makeOnionsBag()</code> method facilitates the creation of an <code>OnionsBag</code> object, which is a collection containing multiple Onion objects. This method is ideal for quickly generating and managing numerous Tor instances:</p>
+    <ul>
+        <li><strong>count</strong>: Specifies the number of Onion objects to be created. The default value is 1.</li>
+        <li><strong>name</strong>: Optionally provides a base name for the Onion instances. The farmer will append a unique ID to each name, based on the total number of Onions.</li>
+        <li><strong>local_sock_port_num_start</strong>: Optionally sets the starting port number. Subsequent Tor SOCKS will be placed on increasing port numbers from this starting point.</li>
+        <li><strong>out_proxy_ip</strong>: Optionally specifies an external proxy IP address that can be connected to from another machine. The script will assign the port.</li>
+        <li><strong>torrc</strong>: Optionally allows specifying a path to a custom torrc file to be used as a template.</li>
+        <li><strong>print_log</strong>: Optionally enables the printing of logs to the console for each Onion object. Be cautious as this can lead to extensive output on the console, especially with many instances!</li>
+        <li><strong>http_bridge</strong>: For each Onion, an HTTP Proxy connected to Tor's SOCKS will be created, with the port assigned by the script.</li>
+    </ul>
+    <p><strong>Remember:</strong> Each created Onion object has its configuration, which you can inspect. This includes SOCKS addresses, HTTP Bridge addresses and ports, among other settings.</p>
+  </div>
   
 </div>
 
