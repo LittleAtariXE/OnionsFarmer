@@ -87,6 +87,15 @@
     <p>Onion objects are typically assigned to variables for easy access. OnionsFarmer internally stores every Onion object created, enabling efficient management and retrieval of these instances as needed.</p>
   </div>
 
+  <div id="method-stopOnion">
+    <h2>OnionsFarmer.stopOnion() Method</h2>
+    <p>The <code>stopOnion()</code> method is designed to halt a specified Onion instance. It serves as a convenient way to terminate Tor processes directly from the OnionsFarmer, complementing the individual stop methods within each Onion object:</p>
+    <ul>
+        <li><strong>name</strong>: The name of the Onion object to be stopped. When this parameter is provided, OnionsFarmer will attempt to stop the specified Onion instance. If the <code>name</code> parameter is omitted, OnionsFarmer will proceed to stop all Onion instances it manages.</li>
+    </ul>
+    <p><strong>REMEMBER:</strong> It is crucial to stop all running Onion instances before exiting your script or application. This ensures a proper shutdown of the Tor processes and prevents any potential resource leaks or orphaned processes.</p>
+  </div>
+
   
 </div>
 
