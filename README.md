@@ -26,3 +26,14 @@
     <br/>
   </div>
 </div>
+
+<div id="requirements">
+    <h2>Requirements</h2>
+    <p>To ensure the proper functioning of Onions Farmer, the following requirements must be met:</p>
+    <ul>
+        <li>Tor Software Installed - Onions Farmer relies on direct interactions with the Tor network, requiring the Tor software to be installed on the user's system.</li>
+        <li>Python 3.11 or Newer - Utilizes features and syntax introduced in Python 3.11, necessitating this or a newer version of Python.</li>
+        <li>Python 'socks' Library - This dependency is crucial for managing SOCKS protocol interactions, allowing Onions Farmer to communicate over Tor network connections effectively.</li>
+    </ul>
+</div>
+
