@@ -113,6 +113,14 @@
     </ul>
     <p><strong>Remember:</strong> Each created Onion object has its configuration, which you can inspect. This includes SOCKS addresses, HTTP Bridge addresses and ports, among other settings.</p>
   </div>
+  <br>
+</div>
+
+<div id="onionobj">
+  <h2 align="center">Onion Object</h2>
+  <div align="center">
+    <img src="img/f3.png" alt="Onion Linux">
+  </div>
   
 </div>
 
