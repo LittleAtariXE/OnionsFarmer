@@ -22,7 +22,10 @@
   <div align="center">
     <a href="#requirements">Requirements</a> &nbsp;|&nbsp;
     <a href="#installation">Install</a>  &nbsp;|&nbsp;
-    <a href="#How_works">Methods</a>  &nbsp;|&nbsp;
+    <a href="#methods"> Onion Farmer Methods</a>  &nbsp;|&nbsp;
+    <br>
+    <a href="#onionobj"> Onion</a>  &nbsp;|&nbsp;
+    <a href="#onionobj"> Onions Bag</a>  &nbsp;|&nbsp;
     <br/>
   </div>
 </div>
