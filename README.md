@@ -140,7 +140,29 @@
           <li><strong>Onion.infoConf()</strong>: Prints a readable configuration of the Onion object to the screen, detailing its current setup and parameters.</li>
       </ul>
   </div>
+</div>
 
+<div id="onionsBag">
+  <h2 align="center"> Onions Bag </h2>
+
+    <div id="onionsbag-object">
+      <h2>The OnionsBag Object</h2>
+      <p>The <code>OnionsBag</code> object, or "Bag of Onions," represents a collection of multiple Tor instances (Onion objects). It allows for efficient and quick management of all contained Onions simultaneously.</p>
+      <h3>Properties</h3>
+      <ul>
+          <li><strong>OnionsBag.len</strong>: Returns the number of Onion objects contained within the bag.</li>
+          <li><strong>OnionsBag.isTorConn</strong>: Checks if all Onion objects have successfully established a full connection to the Tor network. Returns <code>False</code> if at least one Onion is not connected, and <code>True</code> if all are connected.</li>
+      </ul>
+      <h3>Methods</h3>
+      <ul>
+          <li><strong>OnionsBag.start()</strong>: Initiates the Tor connection process for all Onion objects within the bag.</li>
+          <li><strong>OnionsBag.stop()</strong>: Terminates the Tor processes for all Onion objects, effectively stopping all connections.</li>
+          <li><strong>OnionsBag.openBag()</strong>: Returns a list object that contains all the Onion objects within the bag.</li>
+          <li><strong>OnionsBag.getIP()</strong>: Begins the process of obtaining the Exit Node IP addresses for all contained Onion objects.</li>
+          <li><strong>OnionsBag.newCircuit()</strong>: Instructs all Onion objects to start the process of creating a new circuit, potentially changing their exit nodes and IP addresses.</li>
+          <li><strong>OnionsBag.__str__()</strong>: Displays a tabular overview of the basic configuration for all Onion objects, including SOCKS addresses, HTTP Bridge statuses, connection statuses, and more. This method provides a quick and readable summary of the entire OnionsBag state.</li>
+      </ul>
+  </div>
 </div>
 
 
