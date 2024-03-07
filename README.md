@@ -121,7 +121,28 @@
   <div align="center">
     <img src="img/f3.png" alt="Onion Linux">
   </div>
-  
+  <div id="onion-object">
+      <h2>The Onion Object</h2>
+      <p>The <code>Onion</code> object embodies an individual Tor instance within the OnionsFarmer framework. It encapsulates the configuration and management of a Tor process, offering a variety of properties and methods for interaction:</p>
+      
+      <h3>Properties</h3>
+      <ul>
+          <li><strong>Onion.conf</strong>: Returns a dictionary object containing the Onion's configuration, including SOCKS addresses, HTTP Bridge details, etc.</li>
+          <li><strong>Onion.isTorConn</strong>: Returns <code>True</code> if the Onion has successfully connected to the Tor network.</li>
+          <li><strong>Onion.IP</strong>: Retrieves the IP address of the Exit Node. If the address cannot be obtained, it returns <code>None</code>.</li>
+      </ul>
+      
+      <h3>Methods</h3>
+      <ul>
+          <li><strong>Onion.start()</strong>: Initiates the connection to the Tor network. This method begins the Tor process associated with the Onion instance.</li>
+          <li><strong>Onion.stop()</strong>: Terminates the Onion's Tor process. <strong>Important:</strong> Always close each Tor connection with this method before ending your program to prevent errors and orphaned processes.</li>
+          <li><strong>Onion.sendCMD()</strong>: Sends a command through the Tor Control Socket and returns the response. This method allows for direct interaction with the Tor process.</li>
+          <li><strong>Onion.newCircuit()</strong>: Generates a new circuit for the Onion, potentially altering the exit node and IP address.</li>
+          <li><strong>Onion.status()</strong>: Displays the current status of the Onion object, which can be "ready to start", "working", or "terminated".</li>
+          <li><strong>Onion.infoConf()</strong>: Prints a readable configuration of the Onion object to the screen, detailing its current setup and parameters.</li>
+      </ul>
+  </div>
+
 </div>
 
 
