@@ -120,14 +120,6 @@ class OnionsBag:
 
         :return: A string detailing the OnionsBag's contents and the status of each Onion.
         """
-        # text = "\nOnions Bag Class. Contains Onion object.\n"
-        # text += "-- Name  --\t\tSocks Addr -- \t\tExit Node IP\t\tstatus\n"
-        # for onion in self._onions:
-        #     sock = onion.socksAddr
-        #     if not ":" in sock:
-        #         sock = f"127.0.0.1:{sock}"
-        #     text += f"-- {onion.name}  --\t\t{sock}\t\t{onion._ip()}\t\t{self._checkOnion(onion)}\n"
-        # text += f"All Onions in Bag: {len(self._onions)}"
-        # return text
+        return self.showOnions()
     
 

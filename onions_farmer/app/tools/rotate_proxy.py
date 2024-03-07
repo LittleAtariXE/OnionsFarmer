@@ -90,7 +90,6 @@ class CarouselProxyHttp(Thread):
     
     def _acceptConn(self) -> None:
         self.http.settimeout(self._pause_conn)
-        print("STOP EVENTS: ", self.checkStopEvents())
         while not self.checkStopEvents():
             try:
                 conn, addr = self.http.accept()
