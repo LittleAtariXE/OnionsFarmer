@@ -26,6 +26,7 @@
     <br>
     <a href="#onionobj"> Onion</a>  &nbsp;|&nbsp;
     <a href="#onionsBag"> Onions Bag</a>  &nbsp;|&nbsp;
+    <a href="#examples"> Examples</a>  &nbsp;|&nbsp;
     <br/>
   </div>
 </div>
@@ -164,9 +165,11 @@
     </ul>
   </div>
 </div>
+<br>
+<br>
 
 <div id="examples">
-  <h2>Examples</h2>
+  <h2 align="center">Examples</h2>
   <p>Below are examples illustrating how to use the OnionsFarmer utility to manage Tor instances.</p>
 
   <h3>Basic Usage</h3>
